@@ -121,7 +121,7 @@ class Computer:
             value_index = self._raw_value(arg_num)
             return self.memory[value_index]
 
-    def execute(self):
+    def _execute(self):
         old_pc = self.pc
         if self.opcode == OpCode.HALT:
             raise ValueError('Should never execute a HALT')
@@ -133,6 +133,6 @@ class Computer:
     def run(self, max_count=maxsize):
         count = 0
         while count < max_count and not (self.is_halted or self.is_blocked):
-            self.execute()
+            self._execute()
             count += 1
         return count
