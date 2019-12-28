@@ -1,6 +1,7 @@
 import operator
 from enum import Enum
 from functools import partial
+from sys import maxsize
 
 
 def _cmp(fn, c):
@@ -10,23 +11,28 @@ def _cmp(fn, c):
     else:
         c.memory[dest] = 0
 
+
 def _binop(fn, c):
     dest = c.dst_arg_value(2)
     value = fn(c.src_arg_value(0), c.src_arg_value(1))
     c.memory[dest] = value
+
 
 def _jmp_if(fn, c):
     test_value = c.src_arg_value(0)
     if fn(test_value):
         c.pc = c.src_arg_value(1)
 
+
 def _input(c):
     dest = c.dst_arg_value(0)
     c.memory[dest] = c.pop_input()
 
+
 def _output(c):
     value = c.src_arg_value(0)
     c.insert_output(value)
+
 
 class OpCode(Enum):
     ADD = (1, 4, partial(_binop, operator.add))
@@ -49,7 +55,8 @@ class OpCode(Enum):
         for op_code in OpCode:
             if op_code.code == code:
                 return op_code
-        raise ValueError("Unknown OpCode {code}")
+        raise ValueError('Unknown OpCode {code}')
+
 
 class Computer:
     def __init__(self, memory, output_tap=None):
@@ -96,7 +103,6 @@ class Computer:
     def _raw_value(self, arg_num):
         return self.memory[self.pc + arg_num + 1]
 
-
     def src_arg_value(self, arg_num):
         return self._value(arg_num)
 
@@ -107,7 +113,7 @@ class Computer:
         immediate_idx = 10 ** (2 + arg_num)
         immediate = (self.instruction // immediate_idx) % 10
         if immediate > 1:
-            raise ValueError(f"Unexpected value of immediate for {arg_num} of instruction {self.opcode}")
+            raise ValueError(f'Unexpected value of immediate for {arg_num} of instruction {self.opcode}')
 
         if immediate:
             return self._raw_value(arg_num)
@@ -118,7 +124,7 @@ class Computer:
     def execute(self):
         old_pc = self.pc
         if self.opcode == OpCode.HALT:
-            raise ValueError("Should never execute a HALT")
+            raise ValueError('Should never execute a HALT')
 
         self.opcode.fn(self)
         if old_pc == self.pc:

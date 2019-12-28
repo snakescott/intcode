@@ -1,5 +1,7 @@
 from sys import maxsize
+
 from intcode.vm import Computer
+
 
 def thrust(phases, memory, max_count=maxsize):
     amps = [Computer(list(memory)) for phase in phases]
@@ -13,6 +15,7 @@ def thrust(phases, memory, max_count=maxsize):
         output = amp.peek_output()
 
     return output
+
 
 def turbo_thrust(phases, memory, max_count=maxsize, max_loops=1000):
     amps = [Computer(list(memory)) for phase in phases]
