@@ -4,6 +4,11 @@ from functools import partial
 from sys import maxsize
 
 
+def _validate(value):
+    if not isinstance(value, int):
+        raise TypeError(f'cannot set target to non int value {value}')
+
+
 def _cmp(fn, c):
     dest = c.dst_arg_value(2)
     if fn(c.src_arg_value(0), c.src_arg_value(1)):
@@ -15,18 +20,23 @@ def _cmp(fn, c):
 def _binop(fn, c):
     dest = c.dst_arg_value(2)
     value = fn(c.src_arg_value(0), c.src_arg_value(1))
+    _validate(value)
     c.memory[dest] = value
 
 
 def _jmp_if(fn, c):
     test_value = c.src_arg_value(0)
     if fn(test_value):
-        c.pc = c.src_arg_value(1)
+        value = c.src_arg_value(1)
+        _validate(value)
+        c.pc = value
 
 
 def _input(c):
     dest = c.dst_arg_value(0)
-    c.memory[dest] = c.pop_input()
+    value = c.pop_input()
+    _validate(value)
+    c.memory[dest] = value
 
 
 def _output(c):
