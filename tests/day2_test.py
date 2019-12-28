@@ -1,28 +1,23 @@
 from itertools import product
 
-from intcode.test import resource_string
+from intcode.test import load_int
+from intcode.test import load_memory
 from intcode.vm import Computer
 
 
 def test_day2a():
-    input_ = resource_string('day2.input')
-    output_ = resource_string('day2a.output')
+    input_ = load_memory('day2.input')
+    output_ = load_int('day2a.output')
 
-    input_ = list(map(int, input_.strip().split(',')))
     input_[1:3] = [12, 2]
-    output_ = int(output_.strip())
-
     c = Computer(input_)
     c.run()
     assert c.memory[0] == output_
 
 
 def test_day2b():
-    input_ = resource_string('day2.input')
-    output_ = resource_string('day2b.output')
-
-    input_ = list(map(int, input_.strip().split(',')))
-    output_ = int(output_.strip())
+    input_ = load_memory('day2.input')
+    output_ = load_int('day2b.output')
 
     for (noun, verb) in product(range(0, 100), range(0, 100)):
         data = list(input_)
